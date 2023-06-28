@@ -1,0 +1,44 @@
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: AzureKeyVault@2
+    inputs:
+      azureSubscription: 'az-devops-spi'
+      KeyVaultName: 'skakskv01'
+      SecretsFilter: '*'
+      RunAsPreJob: true
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        az login --service-principal --tenant $(azureTenantId) --username $(az-devops-spi-id) --password $(az-devops-spi)
+    displayName: 'Azure Login'
+
+  - task: TerraformInstaller@0
+    inputs:
+      terraformVersion: '1.5'
+
+  - task: TerraformTaskV1@0
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: 'AKS_Module'    
+
+  - task: TerraformTaskV1@0
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      workingDirectory: 'AKS_Module'
+    displayName: 'Terraform Plan'
+    name: 'terraformPlan'
+  
+  - task: TerraformTaskV1@0
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      commandOptions: '-auto-approve'
+      workingDirectory: 'aks-cluster'
+    displayName: 'Terraform Apply'
+    condition: succeeded('terraformPlan')
