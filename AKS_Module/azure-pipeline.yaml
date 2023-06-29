@@ -14,7 +14,7 @@ steps:
       targetType: 'inline'
       script: |
         az login --service-principal --tenant $(azureTenantId) --username $(az-devops-spi-id) --password $(az-devops-spi)
-        az account set --subscription $(azureSubscriptionId)
+        az account set --subscription $(subscriptionId)
     displayName: 'Azure Login'
 
   - task: TerraformInstaller@0
