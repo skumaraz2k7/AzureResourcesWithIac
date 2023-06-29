@@ -1,6 +1,9 @@
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  servicePrinciple: 'az-devops-spi'
+
 steps:
   - task: AzureKeyVault@2
     inputs:
@@ -14,31 +17,31 @@ steps:
       targetType: 'inline'
       script: |
         az login --service-principal --tenant $(azureTenantId) --username $(az-devops-spi-id) --password $(az-devops-spi)
+        az account set --subscription $(subscriptionId)
     displayName: 'Azure Login'
 
   - task: TerraformInstaller@0
     inputs:
-      terraformVersion: '1.5'
+      terraformVersion: '1.5.0'
 
-  - task: TerraformTaskV1@0
+  - task: TerraformTaskV2@2
+    displayName: 'Terraform Init'
     inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: 'AKS_Module'    
+      provider: $(tfProvider)
+      command: 'init'      
+      workingDirectory: $(workingDirectory)
+      backendServiceArm: $(servicePrinciple)
+      backendAzureRmResourceGroupName: $(tfResourceGroup)
+      backendAzureRmStorageAccountName: $(storageAccoount)
+      backendAzureRmContainerName: $(containerName)
+      backendAzureRmKey: $(tfStateFile)
 
-  - task: TerraformTaskV1@0
-    inputs:
-      provider: 'azurerm'
+  - task: TerraformTaskV2@2
+    displayName: Terraform Plan
+    enabled: true
+    inputs: 
+      provider: $(tfProvider)
       command: 'plan'
-      workingDirectory: 'AKS_Module'
-    displayName: 'Terraform Plan'
-    name: 'terraformPlan'
-  
-  - task: TerraformTaskV1@0
-    inputs:
-      provider: 'azurerm'
-      command: 'apply'
-      commandOptions: '-auto-approve'
-      workingDirectory: 'aks-cluster'
-    displayName: 'Terraform Apply'
-    condition: succeeded('terraformPlan')
+      commandOptions: '--var-file=terraform.tfvars --out plan.out'
+      workingDirectory: $(workingDirectory)
+      environmentServiceNameAzureRM: $(servicePrinciple)   
