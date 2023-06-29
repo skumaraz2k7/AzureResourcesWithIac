@@ -31,7 +31,7 @@ steps:
       command: 'init'      
       workingDirectory: $(workingDirectory)
       backendServiceArm: $(servicePrinciple)
-      backendAzureRmResourceGroupName: $(resourceGroup)
+      backendAzureRmResourceGroupName: $(tfResourceGroup)
       backendAzureRmStorageAccountName: $(storageAccoount)
       backendAzureRmContainerName: $(containerName)
       backendAzureRmKey: $(tfStateFile)
