@@ -4,6 +4,11 @@ pool:
 variables:
   servicePrinciple: 'az-devops-spi'
 
+parameters:
+  - name: destroy
+    type: boolean
+    default: false
+
 steps:
   - task: AzureKeyVault@2
     inputs:
@@ -58,7 +63,7 @@ steps:
           
   - task: TerraformTaskV2@2
     displayName: Terraform Destroy
-    enabled: false
+    enabled: $(destroy) 
     inputs: 
       provider: $(tfProvider)
       command: 'destroy'              
