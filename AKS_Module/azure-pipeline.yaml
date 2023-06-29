@@ -32,6 +32,7 @@ steps:
       provider: 'azurerm'
       command: 'plan'
       workingDirectory: 'AKS_Module'
+      backendServiceArm: 'az-devops-spi'
     displayName: 'Terraform Plan'
     name: 'terraformPlan'
   
@@ -41,4 +42,5 @@ steps:
       command: 'apply'
       commandOptions: '-auto-approve'
       workingDirectory: 'aks-cluster'
+      backendServiceArm: 'az-devops-spi'
     displayName: 'Terraform Apply'    
