@@ -44,4 +44,23 @@ steps:
       command: 'plan'
       commandOptions: '--var-file=terraform.tfvars --out plan.out'
       workingDirectory: $(workingDirectory)
-      environmentServiceNameAzureRM: $(servicePrinciple)   
+      environmentServiceNameAzureRM: $(servicePrinciple)  
+
+  - task: TerraformTaskV2@2
+    displayName: Terraform Apply
+    enabled: true
+    inputs: 
+      provider: $(tfProvider)
+      command: 'apply'
+      commandOptions: '--var-file=terraform.tfvars'            
+      workingDirectory: $(workingDirectory)
+      environmentServiceNameAzureRM: $(servicePrinciple)           
+          
+  - task: TerraformTaskV2@2
+    displayName: Terraform Destroy
+    enabled: false
+    inputs: 
+      provider: $(tfProvider)
+      command: 'destroy'              
+      workingDirectory: $(workingDirectory)
+      environmentServiceNameAzureRM: $(servicePrinciple) 
