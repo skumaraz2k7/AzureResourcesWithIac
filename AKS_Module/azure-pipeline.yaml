@@ -40,5 +40,4 @@ steps:
       command: 'apply'
       commandOptions: '-auto-approve'
       workingDirectory: 'aks-cluster'
-    displayName: 'Terraform Apply'
-    condition: succeeded('terraformPlan')
+    displayName: 'Terraform Apply'    
