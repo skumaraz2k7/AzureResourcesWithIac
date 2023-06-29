@@ -21,28 +21,24 @@ steps:
     inputs:
       terraformVersion: '1.5.0'
 
-  - task: TerraformTaskV1@0
+  - task: TerraformTaskV2@2
     displayName: 'Terraform Init'
     inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: 'AKS_Module' 
-      backendServiceArm: 'az-devops-spi'   
+      provider: $(tfProvider)
+      command: 'init'      
+      workingDirectory: $(workingDirectory)
+      backendServiceArm: $(servicePrinciple)
+      backendAzureRmResourceGroupName: $(resourceGroup)
+      backendAzureRmStorageAccountName: $(storageAccoount)
+      backendAzureRmContainerName: $(containerName)
+      backendAzureRmKey: $(tfStateFile)
 
-  - task: TerraformTaskV1@0
-    inputs:
-      provider: 'azurerm'
+  - task: TerraformTaskV2@2
+    displayName: Terraform Plan
+    enabled: true
+    inputs: 
+      provider: $(tfProvider)
       command: 'plan'
-      workingDirectory: 'AKS_Module'
-      backendServiceArm: 'az-devops-spi'
-    displayName: 'Terraform Plan'
-    name: 'terraformPlan'
-  
-  - task: TerraformTaskV1@0
-    inputs:
-      provider: 'azurerm'
-      command: 'apply'
-      commandOptions: '-auto-approve'
-      workingDirectory: 'aks-cluster'
-      backendServiceArm: 'az-devops-spi'
-    displayName: 'Terraform Apply'    
+      commandOptions: '--var-file=terraform.tfvars --out plan.out'
+      workingDirectory: $(workingDirectory)
+      environmentServiceNameAzureRM: $(servicePrinciple)   
