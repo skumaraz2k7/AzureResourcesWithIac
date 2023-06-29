@@ -22,10 +22,12 @@ steps:
       terraformVersion: '1.5.0'
 
   - task: TerraformTaskV1@0
+    displayName: 'Terraform Init'
     inputs:
       provider: 'azurerm'
       command: 'init'
-      workingDirectory: 'AKS_Module'    
+      workingDirectory: 'AKS_Module' 
+      backendServiceArm: 'az-devops-spi'   
 
   - task: TerraformTaskV1@0
     inputs:
