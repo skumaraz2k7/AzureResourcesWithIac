@@ -1,6 +1,9 @@
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  servicePrinciple: 'az-devops-spi'
+
 steps:
   - task: AzureKeyVault@2
     inputs:
