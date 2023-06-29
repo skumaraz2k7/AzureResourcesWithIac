@@ -63,7 +63,7 @@ steps:
           
   - task: TerraformTaskV2@2
     displayName: Terraform Destroy
-    enabled: $(destroy) 
+    enabled: ${{ parameters.destroy }} 
     inputs: 
       provider: $(tfProvider)
       command: 'destroy'              
