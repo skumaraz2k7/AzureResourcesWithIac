@@ -23,12 +23,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 }
 
-data "azuread_service_principal" "aks_spi" {
-  application_id = azurerm_kubernetes_cluster.aks_cluster.service_principal.0.client_id
-}
-
 resource "azurerm_role_assignment" "aksrole" {
   scope                = azurerm_kubernetes_cluster.aks_cluster.id
   role_definition_name = "Azure Kubernetes Service RBAC Cluster Admin"
-  principal_id         = data.azuread_service_principal.aks_spi.id
+  principal_id         = "46a490ec-d94c-47db-b34d-853ed2fac61f"
 }
